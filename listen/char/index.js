@@ -5,9 +5,8 @@ const getUserId = require("./../../getUserId");
 
 const CharacterStats = require("./dataChar");
 
-module.exports = async function character (data) {
+module.exports = async function character(data) {
 	if (data && data.length > 0) {
-
 		let returnValues = data.map((i) => ({
 			event: i.event,
 			value: i.returnValues,
@@ -29,7 +28,11 @@ module.exports = async function character (data) {
 						(charStat) => charStat.teamId === event.value.teamId
 					);
 
-					if (event.value.teamId === "2" || event.value.teamId === "3" || event.value.teamId === "11") {
+					if (
+						event.value.teamId === "2" ||
+						event.value.teamId === "3" ||
+						event.value.teamId === "11"
+					) {
 						burnEffectDmg = Number(event.value.attack) * 0.00005;
 						poisonEffectDmg = Number(event.value.attack) * 0.00005;
 					} else {
@@ -79,7 +82,7 @@ module.exports = async function character (data) {
 						critDamage,
 						burnEffectDmg,
 						poisonEffectDmg,
-						level: nft_level
+						level: nft_level,
 					} = nft;
 					const newAttackSpeed = attackSpeedFn(
 						Number(level),
@@ -96,24 +99,20 @@ module.exports = async function character (data) {
 						teamId,
 						critDamage
 					);
-					const newBurnEffectDmg = burnEffectDmgFn(
-						{
-							level: Number(level),
-							nft_level: Number(nft_level),
-							teamId: teamId,
-							attack: Number(event.value.attack),
-							burnEffectDmg: burnEffectDmg
-						}
-					);
-					const newPoisonEffectDmg = poisonEffectDmgFn(
-						{
-							level: Number(level),
-							nft_level: Number(nft_level),
-							teamId: teamId,
-							attack: Number(event.value.attack),
-							poisonEffectDmg: poisonEffectDmg
-						}
-					);
+					const newBurnEffectDmg = burnEffectDmgFn({
+						level: Number(level),
+						nft_level: Number(nft_level),
+						teamId: teamId,
+						attack: Number(event.value.attack),
+						burnEffectDmg: burnEffectDmg,
+					});
+					const newPoisonEffectDmg = poisonEffectDmgFn({
+						level: Number(level),
+						nft_level: Number(nft_level),
+						teamId: teamId,
+						attack: Number(event.value.attack),
+						poisonEffectDmg: poisonEffectDmg,
+					});
 					if (
 						newCoolDown &&
 						newCritDamage &&
@@ -145,8 +144,14 @@ module.exports = async function character (data) {
 				continue;
 			}
 			if (event.event === "Transfer") {
-				if (event.value.to == "0x0000000000000000000000000000000000000000") {
-					await Character.updateOne({ nftId: event.value.tokenId }, { isBurn: true });
+				if (
+					event.value.to ==
+					"0x0000000000000000000000000000000000000000"
+				) {
+					await Character.updateOne(
+						{ nftId: event.value.tokenId },
+						{ isBurn: true }
+					);
 					console.log("char burn: " + event.value.tokenId);
 				}
 			}
@@ -155,7 +160,7 @@ module.exports = async function character (data) {
 	}
 };
 
-function attackSpeedFn (level, teamId, attackSpeed) {
+function attackSpeedFn(level, teamId, attackSpeed) {
 	switch (level) {
 		case 5:
 			if (teamId === "16") return "1.5";
@@ -169,7 +174,7 @@ function attackSpeedFn (level, teamId, attackSpeed) {
 	}
 }
 
-function coolDownFn (level, teamId, coolDown) {
+function coolDownFn(level, teamId, coolDown) {
 	switch (level) {
 		case 5:
 			switch (teamId) {
@@ -235,7 +240,6 @@ function coolDownFn (level, teamId, coolDown) {
 
 				default:
 					return false;
-
 			}
 
 		case 10:
@@ -302,7 +306,6 @@ function coolDownFn (level, teamId, coolDown) {
 
 				default:
 					return false;
-
 			}
 
 		case 15:
@@ -369,7 +372,6 @@ function coolDownFn (level, teamId, coolDown) {
 
 				default:
 					return false;
-
 			}
 
 		case 20:
@@ -436,7 +438,6 @@ function coolDownFn (level, teamId, coolDown) {
 
 				default:
 					return false;
-
 			}
 
 		case 25:
@@ -503,7 +504,6 @@ function coolDownFn (level, teamId, coolDown) {
 
 				default:
 					return false;
-
 			}
 
 		case 30:
@@ -570,16 +570,14 @@ function coolDownFn (level, teamId, coolDown) {
 
 				default:
 					return false;
-
 			}
 
 		default:
 			return coolDown;
-
 	}
 }
 
-function critDamageFn (level, teamId, critDamage) {
+function critDamageFn(level, teamId, critDamage) {
 	switch (level) {
 		case 15:
 			if (teamId === "7") return "2.4";
@@ -591,11 +589,10 @@ function critDamageFn (level, teamId, critDamage) {
 
 		default:
 			return critDamage;
-
 	}
 }
 
-function burnEffectDmgFn ({ level, nft_level, teamId, attack, burnEffectDmg }) {
+function burnEffectDmgFn({ level, nft_level, teamId, attack, burnEffectDmg }) {
 	if (level > nft_level) {
 		if (teamId === "2" || teamId === "3" || teamId === "11") {
 			return burnEffectDmg * attack * 0.05 * 0.001;
@@ -605,7 +602,13 @@ function burnEffectDmgFn ({ level, nft_level, teamId, attack, burnEffectDmg }) {
 	}
 }
 
-function poisonEffectDmgFn ({ level, nft_level, teamId, attack, poisonEffectDmg }) {
+function poisonEffectDmgFn({
+	level,
+	nft_level,
+	teamId,
+	attack,
+	poisonEffectDmg,
+}) {
 	if (level > nft_level) {
 		if (teamId === "2" || teamId === "3" || teamId === "11") {
 			return poisonEffectDmg * attack * 0.05 * 0.001;
@@ -613,5 +616,4 @@ function poisonEffectDmgFn ({ level, nft_level, teamId, attack, poisonEffectDmg 
 			return poisonEffectDmg * attack * 0.1 * 0.001;
 		}
 	}
-
 }
