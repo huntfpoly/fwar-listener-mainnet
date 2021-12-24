@@ -68,7 +68,7 @@ const getPastEventData = async (
 // network address CharacterDelegate : 0x5880E47A08Aa7A043212839E01C56262106c6f43
 // 0xac4dd94aba846eaf36e16cb38cd49c683b5fbb77 : old contract -- 12912415
 
-let runBlockOpenChests = 13746239;
+let runBlockOpenChests = 13758282;
 let isRunningChest = false;
 let fromBlockChest = runBlockOpenChests;
 let toBlockChest = fromBlockChest + rangeOfBlock;
@@ -125,7 +125,7 @@ const openChestInterval = async () => {
 // ------------------- Character
 // network address Character : 0x57150a95a55f31460be38bbe270209623ac6b8e2
 
-let runBlockChar = 13694780;
+let runBlockChar = 13758282;
 let isRunningChar = false;
 let fromBlockChar = runBlockChar;
 let toBlockChar = fromBlockChar + rangeOfBlock;
@@ -178,7 +178,7 @@ const characterInterval = async () => {
 //  ------------------- End Character
 
 //  ------------------- Mining
-let runBlockMining = 13746239; //12971593
+let runBlockMining = 13758282; //12971593
 let isRunningStaking = false;
 let fromBlockStaking = runBlockMining;
 let toBlockStaking = fromBlockStaking + rangeOfBlock;
@@ -232,7 +232,7 @@ const miningInterval = async () => {
 
 // ------------------- Market
 // network : 0x8290fc65962fC77b44fD0F7C53f56B9885bB8545
-let runBlockMarket = 13746239; //12913660
+let runBlockMarket = 13758282; //12913660
 let isRunningMarket = false;
 let fromBlockMarket = runBlockMarket;
 let toBlockMarket = fromBlockMarket + rangeOfBlock;
@@ -290,7 +290,7 @@ const marketInterval = async () => {
 
 // Ticket
 // address: 0xd0B315E4DC7478F18950304432b072D3BB33CA1f
-const runBlockTicket = 13746239;
+const runBlockTicket = 13758282;
 let isRunningTicket = false;
 let fromBlockBuyTicket = runBlockTicket;
 let toBlockBuyTicket = fromBlockBuyTicket + rangeOfBlock;
@@ -343,7 +343,7 @@ const buyTicketInterval = async () => {
 // End Ticket
 // Token Burn
 // address: 0xce3e05e2dfce8673e08514615dd976754bb88b25
-const runBlockFWTBurn = 13746239;
+const runBlockFWTBurn = 13758282;
 let isRunningFWTBurn = false;
 let fromBlockFWTBurn = runBlockFWTBurn;
 let toBlockFWTBurn = fromBlockFWTBurn + rangeOfBlock;
