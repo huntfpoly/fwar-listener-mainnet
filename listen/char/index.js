@@ -116,13 +116,13 @@ module.exports = async function character (data) {
 						poisonEffectDmg: poisonEffectDmg,
 					});
 
-					if (
-						newCoolDown &&
-						newCritDamage &&
-						newBurnEffectDmg &&
-						newPoisonEffectDmg &&
-						newPoisonEffectDmg
-					) {
+					// if (
+					// 	newCoolDown &&
+					// 	newCritDamage &&
+					// 	newBurnEffectDmg &&
+					// 	newPoisonEffectDmg &&
+					// 	newPoisonEffectDmg
+					// ) {
 					const newUpgrade = {
 						level: level,
 						attack: Number(event.value.attack) * 0.001,
@@ -132,8 +132,8 @@ module.exports = async function character (data) {
 						attackSpeed: newAttackSpeed,
 						coolDown: newCoolDown,
 						critDamage: newCritDamage,
-						burnEffectDmg: newBurnEffectDmg,
-						poisonEffectDmg: newPoisonEffectDmg,
+						burnEffectDmg: Number(event.value.attack) * 0.001 * 0.1,
+						poisonEffectDmg: Number(event.value.attack) * 0.001 * 0.1,
 					};
 
 					await Character.findOneAndUpdate(
@@ -141,7 +141,7 @@ module.exports = async function character (data) {
 						newUpgrade
 					);
 					console.log("char upgrade: " + tokenId);
-					}
+					// }
 				}
 				continue;
 			}
