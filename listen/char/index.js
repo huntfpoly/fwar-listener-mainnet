@@ -1,9 +1,8 @@
 const Character = require("./../../model/character");
 const Team = require("./../../model/team");
-const User = require("./../../model/user");
 
 const getUserId = require("./../../getUserId");
-const MintNftLog = require("./../../model/log/mintNft");
+
 const CharacterStats = require("./dataChar");
 
 module.exports = async function character (data) {
@@ -24,18 +23,18 @@ module.exports = async function character (data) {
 					nftId: event.value.tokenId,
 				});
 				if (!existChar) {
-					let burnEffectDmg;
-					let poisonEffectDmg;
+					let burnEffectDmg = 0;
+					let poisonEffectDmg = 0;
 					const infoStat = CharacterStats.find(
 						(charStat) => charStat.teamId === event.value.teamId
 					);
 
 					if (event.value.teamId === "2" || event.value.teamId === "3" || event.value.teamId === "11") {
-						burnEffectDmg = Number(event.value.attack) / 20000;
-						poisonEffectDmg = Number(event.value.attack) / 20000;
+						burnEffectDmg = Number(event.value.attack) * 0.00005;
+						poisonEffectDmg = Number(event.value.attack) * 0.00005;
 					} else {
-						burnEffectDmg = Number(event.value.attack) / 10000;
-						poisonEffectDmg = Number(event.value.attack) / 10000;
+						burnEffectDmg = Number(event.value.attack) * 0.0001;
+						poisonEffectDmg = Number(event.value.attack) * 0.0001;
 					}
 
 					const infoTeam = await Team.findOne({
@@ -48,12 +47,12 @@ module.exports = async function character (data) {
 						rarity: event.value.rarity,
 						element: event.value.elementType,
 						cardType: infoTeam.type,
-						attack: Number(event.value.attack) / 1000,
-						defense: Number(event.value.defense) / 1000,
-						health: Number(event.value.health) / 1000,
-						baseAttack: Number(event.value.attack) / 1000,
-						baseDefense: Number(event.value.defense) / 1000,
-						baseHealth: Number(event.value.health) / 1000,
+						attack: Number(event.value.attack) * 0.001,
+						defense: Number(event.value.defense) * 0.001,
+						health: Number(event.value.health) * 0.001,
+						baseAttack: Number(event.value.attack) * 0.001,
+						baseDefense: Number(event.value.defense) * 0.001,
+						baseHealth: Number(event.value.health) * 0.001,
 						burnEffectDmg: burnEffectDmg,
 						poisonEffectDmg: poisonEffectDmg,
 						hash: event.value.hash,
@@ -62,6 +61,7 @@ module.exports = async function character (data) {
 					});
 					await newCharacter.save();
 					console.log("create character: " + event.value.tokenId);
+
 					continue;
 				}
 			}
@@ -97,12 +97,12 @@ module.exports = async function character (data) {
 					);
 					const newBurnEffectDmg = burnEffectDmgFn(
 						teamId,
-						Number(event.value.attack) / 1000,
+						Number(event.value.attack) * 0.01,
 						burnEffectDmg
 					);
 					const newPoisonEffectDmg = poisonEffectDmgFn(
 						teamId,
-						Number(event.value.attack) / 1000,
+						Number(event.value.attack) * 0.01,
 						poisonEffectDmg
 					);
 					if (
@@ -114,9 +114,9 @@ module.exports = async function character (data) {
 					) {
 						const newUpgrade = {
 							level: level,
-							attack: Number(event.value.attack) / 1000,
-							defense: Number(event.value.defense) / 1000,
-							health: Number(event.value.health) / 1000,
+							attack: Number(event.value.attack) * 0.01,
+							defense: Number(event.value.defense) * 0.01,
+							health: Number(event.value.health) * 0.01,
 							hash: event.value.hash,
 							attackSpeed: newAttackSpeed,
 							coolDown: newCoolDown,
@@ -125,10 +125,11 @@ module.exports = async function character (data) {
 							poisonEffectDmg: newPoisonEffectDmg,
 						};
 
-						await Character.findOneAndUpdate(
+						const x = await Character.findOneAndUpdate(
 							{ nftId: tokenId },
 							newUpgrade
 						);
+
 						console.log("char upgrade: " + tokenId);
 					}
 				}

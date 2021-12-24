@@ -70,7 +70,7 @@ const getPastEventData = async (
 // network address CharacterDelegate : 0x5880E47A08Aa7A043212839E01C56262106c6f43
 // 0xac4dd94aba846eaf36e16cb38cd49c683b5fbb77 : old contract -- 12912415
 
-let runBlockOpenChests = 13730224;
+let runBlockOpenChests = 13733700;
 let isRunningChest = false;
 let fromBlockChest = runBlockOpenChests;
 let toBlockChest = fromBlockChest + rangeOfBlock;
@@ -127,7 +127,7 @@ const openChestInterval = async () => {
 // ------------------- Character
 // network address Character : 0x57150a95a55f31460be38bbe270209623ac6b8e2
 
-let runBlockChar = 13730224; // 12985688;
+let runBlockChar = 13733700; // 12985688;
 let isRunningChar = false;
 let fromBlockChar = runBlockChar;
 let toBlockChar = fromBlockChar + rangeOfBlock;
@@ -460,9 +460,9 @@ const FWTBurnInterval = async () => {
 setInterval(openChestInterval, 1500);
 setInterval(characterInterval, 1500);
 
-setInterval(miningInterval, 1500);
-setInterval(marketInterval, 1500);
-setInterval(buyTicketInterval, 1500);
+// setInterval(miningInterval, 1500);
+// setInterval(marketInterval, 1500);
+// setInterval(buyTicketInterval, 1500);
 
 // setInterval(FWTBurnInterval, 1500);
 
