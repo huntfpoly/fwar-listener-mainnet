@@ -5,7 +5,7 @@ const getUserId = require("./../../getUserId");
 
 const CharacterStats = require("./dataChar");
 
-module.exports = async function character(data) {
+module.exports = async function character (data) {
 	if (data && data.length > 0) {
 		let returnValues = data.map((i) => ({
 			event: i.event,
@@ -16,63 +16,64 @@ module.exports = async function character(data) {
 		}));
 
 		for (const event of returnValues) {
-			if (event.event === "MintNFT") {
-				const userId = await getUserId(event.value.receiver);
-				const existChar = await Character.exists({
-					nftId: event.value.tokenId,
-				});
-				if (!existChar) {
-					let burnEffectDmg = 0;
-					let poisonEffectDmg = 0;
-					const infoStat = CharacterStats.find(
-						(charStat) => charStat.teamId === event.value.teamId
-					);
+			// if (event.event === "MintNFT") {
+			// 	const userId = await getUserId(event.value.receiver);
+			// 	const existChar = await Character.exists({
+			// 		nftId: event.value.tokenId,
+			// 	});
+			// 	if (!existChar) {
+			// 		let burnEffectDmg = 0;
+			// 		let poisonEffectDmg = 0;
+			// 		const infoStat = CharacterStats.find(
+			// 			(charStat) => charStat.teamId === event.value.teamId
+			// 		);
 
-					if (
-						event.value.teamId === "2" ||
-						event.value.teamId === "3" ||
-						event.value.teamId === "11"
-					) {
-						burnEffectDmg = Number(event.value.attack) * 0.00005;
-						poisonEffectDmg = Number(event.value.attack) * 0.00005;
-					} else {
-						burnEffectDmg = Number(event.value.attack) * 0.0001;
-						poisonEffectDmg = Number(event.value.attack) * 0.0001;
-					}
+			// 		if (
+			// 			event.value.teamId === "2" ||
+			// 			event.value.teamId === "3" ||
+			// 			event.value.teamId === "11"
+			// 		) {
+			// 			burnEffectDmg = Number(event.value.attack) * 0.00005;
+			// 			poisonEffectDmg = Number(event.value.attack) * 0.00005;
+			// 		} else {
+			// 			burnEffectDmg = Number(event.value.attack) * 0.0001;
+			// 			poisonEffectDmg = Number(event.value.attack) * 0.0001;
+			// 		}
 
-					const infoTeam = await Team.findOne({
-						teamId: event.value.teamId,
-					}).select("type");
-					const newCharacter = new Character({
-						userId,
-						nftId: event.value.tokenId,
-						level: event.value.level,
-						rarity: event.value.rarity,
-						element: event.value.elementType,
-						cardType: infoTeam.type,
-						attack: Number(event.value.attack) * 0.001,
-						defense: Number(event.value.defense) * 0.001,
-						health: Number(event.value.health) * 0.001,
-						baseAttack: Number(event.value.attack) * 0.001,
-						baseDefense: Number(event.value.defense) * 0.001,
-						baseHealth: Number(event.value.health) * 0.001,
-						burnEffectDmg: burnEffectDmg,
-						poisonEffectDmg: poisonEffectDmg,
-						hash: event.value.hash,
-						...infoStat,
-						teamId: infoTeam._id,
-					});
-					await newCharacter.save();
-					console.log("create character: " + event.value.tokenId);
+			// 		const infoTeam = await Team.findOne({
+			// 			teamId: event.value.teamId,
+			// 		}).select("type");
+			// 		const newCharacter = new Character({
+			// 			userId,
+			// 			nftId: event.value.tokenId,
+			// 			level: event.value.level,
+			// 			rarity: event.value.rarity,
+			// 			element: event.value.elementType,
+			// 			cardType: infoTeam.type,
+			// 			attack: Number(event.value.attack) * 0.001,
+			// 			defense: Number(event.value.defense) * 0.001,
+			// 			health: Number(event.value.health) * 0.001,
+			// 			baseAttack: Number(event.value.attack) * 0.001,
+			// 			baseDefense: Number(event.value.defense) * 0.001,
+			// 			baseHealth: Number(event.value.health) * 0.001,
+			// 			burnEffectDmg: burnEffectDmg,
+			// 			poisonEffectDmg: poisonEffectDmg,
+			// 			hash: event.value.hash,
+			// 			...infoStat,
+			// 			teamId: infoTeam._id,
+			// 		});
+			// 		await newCharacter.save();
+			// 		console.log("create character: " + event.value.tokenId);
 
-					continue;
-				}
-			}
+			// 		continue;
+			// 	}
+			// }
 			if (event.event === "UpgradeNFT") {
 				const tokenId = event.value["tokenId"];
 				const nft = await Character.findOne({
 					nftId: tokenId,
 				}).populate({ path: "teamId", select: "teamId" });
+
 				if (nft) {
 					const level = event.value["level"];
 					const teamId = nft["teamId"].teamId;
@@ -84,6 +85,7 @@ module.exports = async function character(data) {
 						poisonEffectDmg,
 						level: nft_level,
 					} = nft;
+
 					const newAttackSpeed = attackSpeedFn(
 						Number(level),
 						teamId,
@@ -113,6 +115,7 @@ module.exports = async function character(data) {
 						attack: Number(event.value.attack),
 						poisonEffectDmg: poisonEffectDmg,
 					});
+
 					if (
 						newCoolDown &&
 						newCritDamage &&
@@ -120,47 +123,46 @@ module.exports = async function character(data) {
 						newPoisonEffectDmg &&
 						newPoisonEffectDmg
 					) {
-						const newUpgrade = {
-							level: level,
-							attack: Number(event.value.attack) * 0.001,
-							defense: Number(event.value.defense) * 0.001,
-							health: Number(event.value.health) * 0.001,
-							hash: event.value.hash,
-							attackSpeed: newAttackSpeed,
-							coolDown: newCoolDown,
-							critDamage: newCritDamage,
-							burnEffectDmg: newBurnEffectDmg,
-							poisonEffectDmg: newPoisonEffectDmg,
-						};
+					const newUpgrade = {
+						level: level,
+						attack: Number(event.value.attack) * 0.001,
+						defense: Number(event.value.defense) * 0.001,
+						health: Number(event.value.health) * 0.001,
+						hash: event.value.hash,
+						attackSpeed: newAttackSpeed,
+						coolDown: newCoolDown,
+						critDamage: newCritDamage,
+						burnEffectDmg: newBurnEffectDmg,
+						poisonEffectDmg: newPoisonEffectDmg,
+					};
 
-						const x = await Character.findOneAndUpdate(
-							{ nftId: tokenId },
-							newUpgrade
-						);
-
-						console.log("char upgrade: " + tokenId);
+					await Character.findOneAndUpdate(
+						{ nftId: tokenId },
+						newUpgrade
+					);
+					console.log("char upgrade: " + tokenId);
 					}
 				}
 				continue;
 			}
-			if (event.event === "Transfer") {
-				if (
-					event.value.to ==
-					"0x0000000000000000000000000000000000000000"
-				) {
-					await Character.updateOne(
-						{ nftId: event.value.tokenId },
-						{ isBurn: true }
-					);
-					console.log("char burn: " + event.value.tokenId);
-				}
-			}
+			// if (event.event === "Transfer") {
+			// 	if (
+			// 		event.value.to ==
+			// 		"0x0000000000000000000000000000000000000000"
+			// 	) {
+			// 		await Character.updateOne(
+			// 			{ nftId: event.value.tokenId },
+			// 			{ isBurn: true }
+			// 		);
+			// 		console.log("char burn: " + event.value.tokenId);
+			// 	}
+			// }
 		}
 		returnValues = null;
 	}
 };
 
-function attackSpeedFn(level, teamId, attackSpeed) {
+function attackSpeedFn (level, teamId, attackSpeed) {
 	switch (level) {
 		case 5:
 			if (teamId === "16") return "1.5";
@@ -174,7 +176,7 @@ function attackSpeedFn(level, teamId, attackSpeed) {
 	}
 }
 
-function coolDownFn(level, teamId, coolDown) {
+function coolDownFn (level, teamId, coolDown) {
 	switch (level) {
 		case 5:
 			switch (teamId) {
@@ -577,7 +579,7 @@ function coolDownFn(level, teamId, coolDown) {
 	}
 }
 
-function critDamageFn(level, teamId, critDamage) {
+function critDamageFn (level, teamId, critDamage) {
 	switch (level) {
 		case 15:
 			if (teamId === "7") return "2.4";
@@ -592,7 +594,8 @@ function critDamageFn(level, teamId, critDamage) {
 	}
 }
 
-function burnEffectDmgFn({ level, nft_level, teamId, attack, burnEffectDmg }) {
+function burnEffectDmgFn ({ level, nft_level, teamId, attack, burnEffectDmg }) {
+
 	if (level > nft_level) {
 		if (teamId === "2" || teamId === "3" || teamId === "11") {
 			return burnEffectDmg * attack * 0.05 * 0.001;
@@ -600,9 +603,10 @@ function burnEffectDmgFn({ level, nft_level, teamId, attack, burnEffectDmg }) {
 			return burnEffectDmg * attack * 0.1 * 0.001;
 		}
 	}
+	return false;
 }
 
-function poisonEffectDmgFn({
+function poisonEffectDmgFn ({
 	level,
 	nft_level,
 	teamId,
@@ -616,4 +620,5 @@ function poisonEffectDmgFn({
 			return poisonEffectDmg * attack * 0.1 * 0.001;
 		}
 	}
+	return false;
 }
