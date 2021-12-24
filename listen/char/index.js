@@ -79,6 +79,7 @@ module.exports = async function character (data) {
 						critDamage,
 						burnEffectDmg,
 						poisonEffectDmg,
+						level: nft_level
 					} = nft;
 					const newAttackSpeed = attackSpeedFn(
 						Number(level),
@@ -96,14 +97,22 @@ module.exports = async function character (data) {
 						critDamage
 					);
 					const newBurnEffectDmg = burnEffectDmgFn(
-						teamId,
-						Number(event.value.attack) * 0.01,
-						burnEffectDmg
+						{
+							level: Number(level),
+							nft_level: Number(nft_level),
+							teamId: teamId,
+							attack: Number(event.value.attack),
+							burnEffectDmg: burnEffectDmg
+						}
 					);
 					const newPoisonEffectDmg = poisonEffectDmgFn(
-						teamId,
-						Number(event.value.attack) * 0.01,
-						poisonEffectDmg
+						{
+							level: Number(level),
+							nft_level: Number(nft_level),
+							teamId: teamId,
+							attack: Number(event.value.attack),
+							poisonEffectDmg: poisonEffectDmg
+						}
 					);
 					if (
 						newCoolDown &&
@@ -114,9 +123,9 @@ module.exports = async function character (data) {
 					) {
 						const newUpgrade = {
 							level: level,
-							attack: Number(event.value.attack) * 0.01,
-							defense: Number(event.value.defense) * 0.01,
-							health: Number(event.value.health) * 0.01,
+							attack: Number(event.value.attack) * 0.001,
+							defense: Number(event.value.defense) * 0.001,
+							health: Number(event.value.health) * 0.001,
 							hash: event.value.hash,
 							attackSpeed: newAttackSpeed,
 							coolDown: newCoolDown,
@@ -586,18 +595,23 @@ function critDamageFn (level, teamId, critDamage) {
 	}
 }
 
-function burnEffectDmgFn (teamId, attack, burnEffectDmg) {
-	if (teamId === "2" || teamId === "3" || teamId === "11") {
-		return burnEffectDmg * attack * 0.05;
-	} else {
-		return burnEffectDmg * attack * 0.1;
+function burnEffectDmgFn ({ level, nft_level, teamId, attack, burnEffectDmg }) {
+	if (level > nft_level) {
+		if (teamId === "2" || teamId === "3" || teamId === "11") {
+			return burnEffectDmg * attack * 0.05 * 0.001;
+		} else {
+			return burnEffectDmg * attack * 0.1 * 0.001;
+		}
 	}
 }
 
-function poisonEffectDmgFn (teamId, attack, poisonEffectDmg) {
-	if (teamId === "2" || teamId === "3" || teamId === "11") {
-		return poisonEffectDmg * attack * 0.05;
-	} else {
-		return poisonEffectDmg * attack * 0.1;
+function poisonEffectDmgFn ({ level, nft_level, teamId, attack, poisonEffectDmg }) {
+	if (level > nft_level) {
+		if (teamId === "2" || teamId === "3" || teamId === "11") {
+			return poisonEffectDmg * attack * 0.05 * 0.001;
+		} else {
+			return poisonEffectDmg * attack * 0.1 * 0.001;
+		}
 	}
+
 }
