@@ -16,58 +16,58 @@ module.exports = async function character (data) {
 		}));
 
 		for (const event of returnValues) {
-			// if (event.event === "MintNFT") {
-			// 	const userId = await getUserId(event.value.receiver);
-			// 	const existChar = await Character.exists({
-			// 		nftId: event.value.tokenId,
-			// 	});
-			// 	if (!existChar) {
-			// 		let burnEffectDmg = 0;
-			// 		let poisonEffectDmg = 0;
-			// 		const infoStat = CharacterStats.find(
-			// 			(charStat) => charStat.teamId === event.value.teamId
-			// 		);
+			if (event.event === "MintNFT") {
+				const userId = await getUserId(event.value.receiver);
+				const existChar = await Character.exists({
+					nftId: event.value.tokenId,
+				});
+				if (!existChar) {
+					let burnEffectDmg = 0;
+					let poisonEffectDmg = 0;
+					const infoStat = CharacterStats.find(
+						(charStat) => charStat.teamId === event.value.teamId
+					);
 
-			// 		if (
-			// 			event.value.teamId === "2" ||
-			// 			event.value.teamId === "3" ||
-			// 			event.value.teamId === "11"
-			// 		) {
-			// 			burnEffectDmg = Number(event.value.attack) * 0.00005;
-			// 			poisonEffectDmg = Number(event.value.attack) * 0.00005;
-			// 		} else {
-			// 			burnEffectDmg = Number(event.value.attack) * 0.0001;
-			// 			poisonEffectDmg = Number(event.value.attack) * 0.0001;
-			// 		}
+					if (
+						event.value.teamId === "2" ||
+						event.value.teamId === "3" ||
+						event.value.teamId === "11"
+					) {
+						burnEffectDmg = Number(event.value.attack) * 0.00005;
+						poisonEffectDmg = Number(event.value.attack) * 0.00005;
+					} else {
+						burnEffectDmg = Number(event.value.attack) * 0.0001;
+						poisonEffectDmg = Number(event.value.attack) * 0.0001;
+					}
 
-			// 		const infoTeam = await Team.findOne({
-			// 			teamId: event.value.teamId,
-			// 		}).select("type");
-			// 		const newCharacter = new Character({
-			// 			userId,
-			// 			nftId: event.value.tokenId,
-			// 			level: event.value.level,
-			// 			rarity: event.value.rarity,
-			// 			element: event.value.elementType,
-			// 			cardType: infoTeam.type,
-			// 			attack: Number(event.value.attack) * 0.001,
-			// 			defense: Number(event.value.defense) * 0.001,
-			// 			health: Number(event.value.health) * 0.001,
-			// 			baseAttack: Number(event.value.attack) * 0.001,
-			// 			baseDefense: Number(event.value.defense) * 0.001,
-			// 			baseHealth: Number(event.value.health) * 0.001,
-			// 			burnEffectDmg: burnEffectDmg,
-			// 			poisonEffectDmg: poisonEffectDmg,
-			// 			hash: event.value.hash,
-			// 			...infoStat,
-			// 			teamId: infoTeam._id,
-			// 		});
-			// 		await newCharacter.save();
-			// 		console.log("create character: " + event.value.tokenId);
+					const infoTeam = await Team.findOne({
+						teamId: event.value.teamId,
+					}).select("type");
+					const newCharacter = new Character({
+						userId,
+						nftId: event.value.tokenId,
+						level: event.value.level,
+						rarity: event.value.rarity,
+						element: event.value.elementType,
+						cardType: infoTeam.type,
+						attack: (Number(event.value.attack) * 0.001).toFixed(2),
+						defense: (Number(event.value.defense) * 0.001).toFixed(2),
+						health: (Number(event.value.health) * 0.001).toFixed(2),
+						baseAttack: (Number(event.value.attack) * 0.001).toFixed(2),
+						baseDefense: (Number(event.value.defense) * 0.001).toFixed(2),
+						baseHealth: (Number(event.value.health) * 0.001).toFixed(2),
+						burnEffectDmg: burnEffectDmg,
+						poisonEffectDmg: poisonEffectDmg,
+						hash: event.value.hash,
+						...infoStat,
+						teamId: infoTeam._id,
+					});
+					await newCharacter.save();
+					console.log("create character: " + event.value.tokenId);
 
-			// 		continue;
-			// 	}
-			// }
+					continue;
+				}
+			}
 			if (event.event === "UpgradeNFT") {
 				const tokenId = event.value["tokenId"];
 				const nft = await Character.findOne({
@@ -125,15 +125,25 @@ module.exports = async function character (data) {
 					// ) {
 					const newUpgrade = {
 						level: level,
-						attack: Number(event.value.attack) * 0.001,
-						defense: Number(event.value.defense) * 0.001,
-						health: Number(event.value.health) * 0.001,
+						attack: (Number(event.value.attack) * 0.001).toFixed(2),
+						defense: (Number(event.value.defense) * 0.001).toFixed(
+							2
+						),
+						health: (Number(event.value.health) * 0.001).toFixed(2),
 						hash: event.value.hash,
 						attackSpeed: newAttackSpeed,
 						coolDown: newCoolDown,
 						critDamage: newCritDamage,
-						burnEffectDmg: Number(event.value.attack) * 0.001 * 0.1,
-						poisonEffectDmg: Number(event.value.attack) * 0.001 * 0.1,
+						burnEffectDmg: (
+							Number(event.value.attack) *
+							0.001 *
+							0.1
+						).toFixed(2),
+						poisonEffectDmg: (
+							Number(event.value.attack) *
+							0.001 *
+							0.1
+						).toFixed(2),
 					};
 
 					await Character.findOneAndUpdate(
@@ -145,18 +155,18 @@ module.exports = async function character (data) {
 				}
 				continue;
 			}
-			// if (event.event === "Transfer") {
-			// 	if (
-			// 		event.value.to ==
-			// 		"0x0000000000000000000000000000000000000000"
-			// 	) {
-			// 		await Character.updateOne(
-			// 			{ nftId: event.value.tokenId },
-			// 			{ isBurn: true }
-			// 		);
-			// 		console.log("char burn: " + event.value.tokenId);
-			// 	}
-			// }
+			if (event.event === "Transfer") {
+				if (
+					event.value.to ==
+					"0x0000000000000000000000000000000000000000"
+				) {
+					await Character.updateOne(
+						{ nftId: event.value.tokenId },
+						{ isBurn: true }
+					);
+					console.log("char burn: " + event.value.tokenId);
+				}
+			}
 		}
 		returnValues = null;
 	}
@@ -595,7 +605,6 @@ function critDamageFn (level, teamId, critDamage) {
 }
 
 function burnEffectDmgFn ({ level, nft_level, teamId, attack, burnEffectDmg }) {
-
 	if (level > nft_level) {
 		if (teamId === "2" || teamId === "3" || teamId === "11") {
 			return burnEffectDmg * attack * 0.05 * 0.001;
