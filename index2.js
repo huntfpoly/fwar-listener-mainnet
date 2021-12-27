@@ -6,8 +6,6 @@ require("./connectDb");
 const character = require("./listen/char");
 const orderMarket = require("./listen/market");
 
-const burnChar = require("./listen/char/burn");
-
 const createOpenChestHistory = require("./listen/char-delegate/openChest");
 const buyTicket = require("./listen/ticket/buy");
 const mining = require("./listen/mining");

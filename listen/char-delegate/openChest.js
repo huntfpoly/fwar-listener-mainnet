@@ -14,7 +14,7 @@ const createOpenChestHistory = async (data) => {
                 userId,
                 transactionHash: char.tx,
             });
-
+            console.log(existOpenChestHistory);
             if (!existOpenChestHistory) {
                 let { _number: amount, _openChestInfo: nfts } = char.result;
                 // console.log('nft', nfts)
