@@ -395,12 +395,12 @@ const FWTBurnInterval = async () => {
   isRunningFWTBurn = false;
 };
 
-// setInterval(openChestInterval, 1500);
-// setInterval(characterInterval, 1500);
+setInterval(openChestInterval, 1500);
+setInterval(characterInterval, 1500);
 
-// setInterval(miningInterval, 1500);
+setInterval(miningInterval, 1500);
 setInterval(marketInterval, 1500);
-// setInterval(buyTicketInterval, 1500);
+setInterval(buyTicketInterval, 1500);
 
 // setInterval(FWTBurnInterval, 1500);
 
